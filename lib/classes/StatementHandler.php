@@ -102,6 +102,9 @@ class StatementHandler {
         $this->clearErrors();
         $this->clearResults();
         if ($sth = $this->PDO->prepare($sql)){
+            /*
+             *Debug
+             */
             //echo "SQL is:".$sql."<br>";
             //echo "Values are:<br>";
             //var_dump($values);
@@ -113,11 +116,12 @@ class StatementHandler {
                 }
             } else {
                 $q = $this->PDO->query($sql);
-                $result = $q->fetchAll(PDO::FETCH_ASSOC);
-                $row = $q->fetchAll(PDO::FETCH_NUM);
+                
                 $this->_count = $q->rowCount();
                 
                 if ($fetch){
+                    $result = $q->fetchAll(PDO::FETCH_ASSOC);
+                    $row = $q->fetchAll(PDO::FETCH_NUM);
                     $this->_results = $result;
                 }
             }
