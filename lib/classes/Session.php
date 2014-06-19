@@ -19,7 +19,11 @@ class Session {
     }
     
     public static function create(){
-        session_start();
+        if (isset($_SESSION)){
+            session_regenerate_id(true);
+        } else {
+            session_start();
+        }        
     }
     
     public static function destroy($name){

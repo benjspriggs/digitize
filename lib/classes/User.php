@@ -53,23 +53,23 @@ class User {
     public function isLoggedIn($userid){
         $this->clearErrors();
         $STH = $this->STH;
-        $dbsess = $this->getDBHash($userid);
+        $dbhash = $this->getDBHash($userid); //Session data
         $exists = $this->getUsername($userid);
         if ($exists != NULL){
-            if ($dbsess != NULL){
-                if (Session::get(Config::get('session/session_name')) == $dbsess){
+            if ($dbhash != NULL){
+                if (Session::get(Config::get('session/session_name')) == $dbhash){
                     if (Session::get(Config::get('session/session_name')) + md5(uniqid(self::getUsername($userid))) === Cookie::get(Config::get('remember/cookie_name'))){
                         //The user is logged in and remembered
                         return 3;
                     }
-                    //The user is logged in
+                    //The user is logged in successfully
                     return 2;
                 } else {
                     $this->_errors[] = "The record exists but the session data does not match.";
                     return 1;
                 }
             } else {
-                //Session data has not been created
+                //Session data has not been created, and the user has not logged in anywhere else
                 return 1;
             }
             
