@@ -10,6 +10,6 @@
     <input type="checkbox" name="remember" value="remember">
     <input type="submit" name="submit" value="Log In">
     <input type="hidden" name="action" value="logIn">
-    <input type="hidden" name="token" value="<?=Token::csrf()?>">
+    <input type="hidden" name="token" value="<?=Token::csrf();?>">
 </form>
 <a href="register.php">Register</a>

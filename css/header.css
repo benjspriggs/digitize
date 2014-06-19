@@ -1,0 +1,24 @@
+#header {
+   position: relative;
+}
+
+#header a, #header a:visited { /*Rules for the home link*/
+   color: rgb(182, 186, 255);
+}
+
+#header a li, #header a li:visited {
+   color: rgb(182, 186, 255);
+}
+
+#header a li:active, #header a li:focus {
+   color: rgb(91, 93, 127);
+}
+
+#header a li:hover, #header a li:focus {
+   color: red;   /*Make sure to change this sucker at some point, Alan*/
+   -webkit-transition: .5s all;
+   -moz-transition: .5s all;
+   -ms-transition: .5s all;
+   -o-transition: .5s all;
+   transition: .5s all;
+}

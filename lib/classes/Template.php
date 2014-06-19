@@ -6,7 +6,7 @@ class Template {
             $content;
     
     ##Title is the name of the web page, name is name of the file
-    public function __construct($name, $css, $content = '', $js = NULL){
+    public function __construct($name, $css, $content = '', $js = array()){
         $this->name = $name . " | DiGITIZE";
         $this->css = $css;
         $this->js = $js;

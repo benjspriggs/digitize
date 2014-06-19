@@ -1,49 +1,70 @@
-$.fn.serializeObject = function()
-{
-    var o = {};
-    var a = this.serializeArray();
-    $.each(a, function() {
-        if (o[this.name] !== undefined) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(this.value || '');
-        } else {
-            o[this.name] = this.value || '';
-        }
-    });
-    return o;
-};
+function getPhoto ( id ){
+    var dfd = new jQuery.Deferred();
+}
+    
+function getGallery ( name ){
+    
+}
 
 $(document).ready(function(){
-    var photoArray;
-    var galleryArray;
+    var gallery = $('div#gallery');
+    var photo = $('div#photo');
+    var g_json = $('#g_json').attr('data-json');
+    g = jQuery.parseJSON(g_json);
+    var p_json = $('#p_json').attr('data-json');
+    p = jQuery.parseJSON(p_json);
     
-    photoArray = <?php echo json_encode($ph_js); ?>;
-    galleryArray = <?php echo json_encode($g); ?>;
-    
-    gallery = "gallery=" + JSON.stringify(galleryArray);
-    
-    $('#form').load('lib/content/galleryeditinputs.php', gallery, function(){ //Load the gallery inputs. If that's successful;
-        $.each(photoArray, function( index, value ){ //For each photo, associate a photoInfo object with the photo's info
-            
-            var photoInfo = {index: value}; //index is the DB photo id, value is array associated with that photo
-            photo = "photo=" + JSON.stringify(photoInfo);
-            
-            $('#form').load('lib/content/photoeditinputs.php', photo, function(){ //Pass string of JSON to PHP
-                $('#photo').submit(function( event )
-                {
-                    event.preventDefault();
-                    //Send the data to loading
-                    var photodata = "photodata=" + JSON.stringify($('#photo').serializeObject());
-                    $.load('lib/actions/updatePhoto.php', photodata, function(){
-                        console.log('Updated file!');
-                    });
+    gallery.empty().load('lib/content/gallery_edit_form.php', function(){
+        console.log('Gallery inputs loaded.');
+        g_r = {"name":g.name,"action":"getGallery"};
+        $.post('json.php', g_r, function( data ){
+            console.log(data);
+            gallInfo = jQuery.parseJSON(data);
+            $('#name').html(gallInfo.name);
+            $('input#name').val(gallInfo.name);
+            $('input#gallery_desc').val(gallInfo.desc);
+            gallery.submit( function( event ){
+                event.preventDefault();
+                alert('Gallery updated.');
+            });
+        });
+
+        
+        photo.empty().load('lib/content/photo_edit_form.php', function(){
+            var c = 0;
+            console.log('Photo input loaded.');
+            p_r = {"id":p.id[c],"action":"getPhoto"};
+            $.post('json.php', p_r, function( data ){
+                var photoInfo = jQuery.parseJSON(data);
+                $('#title').html(photoInfo.title);
+                $('input#title').val(photoInfo.title);
+                $('input#photo_desc').val(photoInfo.desc);
+                $('input#datetaken').val(photoInfo.datetaken);
+                $('input#subjects').val(photoInfo.subjects);
+                $('#preview img').attr('src', g.name + "/" + p.filename);
+            });
+            //Begin ieteration
+            //After a form has been sumitted, load the next photo, continue until done with the array
+            photo.submit( function( event ){
+                event.preventDefault();
+                //Upload, go to next photo:
+                var pod = $('form#photo').serialize();
+                $.post('json.php', pod, function(data){
+                    //The information was submitted
+                    console.log(data);
+                });
+                c++;
+                p_r = {"id":p.id[c],"action":"getPhoto"};
+                $.post('json.php', p_r, function( data ){
+                    var photoInfo = jQuery.parseJSON(data);
+                    $('#title').html(photoInfo.title);
+                    $('input#title').val(photoInfo.title);
+                    $('input#photo_desc').val(photoInfo.desc);
+                    $('input#datetaken').val(photoInfo.datetaken);
+                    $('input#subjects').val(photoInfo.subjects);
                 });
             });
-        }); //End of each loop
+        });
     });
-
-    
     
 });
